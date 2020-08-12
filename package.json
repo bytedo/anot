@@ -5,8 +5,8 @@
     "type": "git",
     "url": "https://github.com/@bytedo/anot.git"
   },
-  "version": "2.2.10",
-  "description": "an elegant efficient express mvvm framework",
+  "version": "0.0.1",
+  "description": "前端迷你mvvm框架。基于**司徒正美**的`avalon2.x`版精简修改而来。",
   "main": "dist/anot.js",
   "keywords": ["javascript", "avalon", "mvvm", "virtual dom"],
   "scripts": {
@@ -18,8 +18,5 @@
     "@bytedo/rollup-plugin-uglify": "^1.0.0",
     "iofs": "^1.3.2",
     "rollup": "^2.23.1"
-  },
-  "bugs": {
-    "url": "https://github.com/RubyLouvre/avalon/issues"
   }
 }
