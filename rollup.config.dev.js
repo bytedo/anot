@@ -1,22 +1,30 @@
-// const uglify = require('@bytedo/rollup-plugin-uglify')
+/**
+ * 开发版配置
+ * @author yutent<yutent.io@gmail.com>
+ * @date 2020/08/13 15:28:39
+ */
 
-module.exports = [
+import esm from './lib/plugin.esm'
+
+export default [
   {
     input: 'src/anot.js',
     output: {
       file: 'dist/anot.js',
-      format: 'es',
-      sourcemap: false
+      format: 'iife',
+      sourcemap: true,
+      name: '_Anot'
     },
-    plugins: []
+    plugins: [esm()]
   },
   {
     input: 'src/anot.touch.js',
     output: {
       file: 'dist/anot.touch.js',
-      format: 'es',
-      sourcemap: false
+      format: 'iife',
+      sourcemap: true,
+      name: '_Anot'
     },
-    plugins: []
+    plugins: [esm()]
   }
 ]
