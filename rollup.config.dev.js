@@ -16,15 +16,15 @@ export default [
       name: '_Anot'
     },
     plugins: [esm()]
-  },
-  {
-    input: 'src/anot.touch.js',
-    output: {
-      file: 'dist/anot.touch.js',
-      format: 'iife',
-      sourcemap: true,
-      name: '_Anot'
-    },
-    plugins: [esm()]
   }
+  // {
+  //   input: 'src/anot.touch.js',
+  //   output: {
+  //     file: 'dist/anot.touch.js',
+  //     format: 'iife',
+  //     sourcemap: true,
+  //     name: '_Anot'
+  //   },
+  //   plugins: [esm()]
+  // }
 ]

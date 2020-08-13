@@ -1,5 +1,3 @@
-import { document } from '../seed/core'
-
 export function VComment(text) {
   this.nodeName = '#comment'
   this.nodeValue = text

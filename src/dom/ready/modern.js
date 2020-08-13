@@ -1,4 +1,4 @@
-import { Anot, window, document, root, inBrowser } from '../../seed/core'
+import { Anot, root } from '../../seed/core'
 
 var readyList = []
 
@@ -33,6 +33,4 @@ function bootstrap() {
   Anot.bind(window, 'load', fireReady)
 }
 
-if (inBrowser) {
-  bootstrap()
-}
+bootstrap()

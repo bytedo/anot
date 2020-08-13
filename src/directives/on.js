@@ -1,4 +1,4 @@
-import { Anot, inBrowser } from '../seed/core'
+import { Anot } from '../seed/core'
 
 import { addScope, makeHandle } from '../parser/index'
 

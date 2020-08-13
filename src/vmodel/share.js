@@ -1,4 +1,4 @@
-import { Anot, platform, isObject, modern } from '../seed/core'
+import { Anot, platform, isObject } from '../seed/core'
 import { $$skipArray } from './reserved'
 import { Mutation } from './Mutation'
 import { Computed } from './Computed'

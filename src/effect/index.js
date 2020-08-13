@@ -1,4 +1,4 @@
-import { Anot, window, Cache } from '../seed/core'
+import { Anot, Cache } from '../seed/core'
 import { cssDiff } from '../directives/css'
 import {
   css3,

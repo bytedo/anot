@@ -1,8 +1,8 @@
-import { win, document, msie, inBrowser, root, modern } from './browser'
 import { Cache } from './cache'
 import { directive, directives, delayCompileNodes } from './directive'
 
-export var window = win
+const root = document.documentElement
+
 export function Anot(el) {
   return new Anot.init(el)
 }
@@ -53,17 +53,7 @@ export function log() {
     Function.apply.call(console.log, console, arguments)
   }
 }
-export {
-  Cache,
-  directive,
-  directives,
-  delayCompileNodes,
-  document,
-  root,
-  msie,
-  modern,
-  inBrowser
-}
+export { Cache, directive, directives, delayCompileNodes, root }
 export function warn() {
   if (hasConsole && Anot.config.debug) {
     var method = console.warn || console.log
@@ -274,12 +264,9 @@ shadowCopy(Anot, {
   error,
   config,
 
-  modern,
-  msie,
   root,
   document,
   window,
-  inBrowser,
 
   isObject,
   range,

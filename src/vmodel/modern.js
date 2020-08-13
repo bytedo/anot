@@ -1,4 +1,4 @@
-import { Anot, platform, modern } from '../seed/core'
+import { Anot, platform } from '../seed/core'
 import { $$skipArray } from './reserved'
 import { Action } from './Action'
 import './share'

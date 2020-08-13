@@ -4,7 +4,6 @@
  * ------------------------------------------------------------
  */
 
-import { window } from '../seed/core'
 let checker = {
   TransitionEvent: 'transitionend',
   WebKitTransitionEvent: 'webkitTransitionEnd',

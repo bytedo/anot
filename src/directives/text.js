@@ -1,4 +1,4 @@
-import { Anot, inBrowser } from '../seed/core'
+import { Anot } from '../seed/core'
 
 Anot.directive('text', {
   delay: true,
@@ -9,10 +9,10 @@ Anot.directive('text', {
     }
     var child = { nodeName: '#text', nodeValue: this.getValue() }
     node.children.splice(0, node.children.length, child)
-    if (inBrowser) {
-      Anot.clearHTML(node.dom)
-      node.dom.appendChild(Anot.vdom(child, 'toDOM'))
-    }
+
+    Anot.clearHTML(node.dom)
+    node.dom.appendChild(Anot.vdom(child, 'toDOM'))
+
     this.node = child
     var type = 'expr'
     this.type = this.name = type

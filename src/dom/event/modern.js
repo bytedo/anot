@@ -1,4 +1,4 @@
-import { Anot, document } from '../../seed/core'
+import { Anot } from '../../seed/core'
 
 import { avEvent } from './share'
 export { avEvent }

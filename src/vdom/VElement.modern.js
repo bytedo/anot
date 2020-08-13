@@ -1,4 +1,4 @@
-import { Anot, document } from '../seed/core'
+import { Anot } from '../seed/core'
 
 export function VElement(type, props, children, isVoidTag) {
   this.nodeName = type
@@ -12,7 +12,7 @@ VElement.prototype = {
     if (this.dom) return this.dom
     var dom,
       tagName = this.nodeName
-    if (Anot.modern && svgTags[tagName]) {
+    if (svgTags[tagName]) {
       dom = createSVG(tagName)
     } else {
       dom = document.createElement(tagName)
@@ -89,6 +89,4 @@ var svgTags = Anot.oneObject(
     'path,polygon,polyline,rect,symbol,text,use,g,svg'
 )
 
-if (Anot.inBrowser) {
-  var supportTemplate = 'content' in document.createElement('template')
-}
+var supportTemplate = 'content' in document.createElement('template')

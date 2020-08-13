@@ -1,4 +1,4 @@
-import { Anot, window, document } from '../../seed/core'
+import { Anot } from '../../seed/core'
 import { propMap } from './propMap'
 
 var rsvg = /^\[object SVG\w*Element\]$/

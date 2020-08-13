@@ -1,4 +1,4 @@
-import { Anot, Cache, document, createFragment } from '../../seed/core'
+import { Anot, Cache, createFragment } from '../../seed/core'
 import { fromString } from '../../vtree/fromString'
 export { Anot }
 

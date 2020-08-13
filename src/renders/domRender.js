@@ -1,10 +1,4 @@
-import {
-  Anot,
-  config,
-  inBrowser,
-  delayCompileNodes,
-  directives
-} from '../seed/core'
+import { Anot, config, delayCompileNodes, directives } from '../seed/core'
 import { fromDOM } from '../vtree/fromDOM'
 import { fromString } from '../vtree/fromString'
 
@@ -173,11 +167,11 @@ Render.prototype = {
       //推算出指令类型
       var type = dirs['ms-important'] === $id ? 'important' : 'controller'
       //推算出用户定义时属性名,是使用ms-属性还是:属性
-      var attrName = 'ms-' + type in attrs ? 'ms-' + type : ':' + type
+      var _tmp = 'ms-' + type
+      var attrName = _tmp in attrs ? _tmp : ':' + type
 
-      if (inBrowser) {
-        delete attrs[attrName]
-      }
+      delete attrs[attrName]
+
       var dir = directives[type]
       scope = dir.getScope.call(this, $id, scope)
       if (!scope) {
@@ -237,13 +231,11 @@ Render.prototype = {
   complete() {
     this.yieldDirectives()
     this.beforeReady()
-    if (inBrowser) {
-      var root = this.root
-      if (inBrowser) {
-        var rootDom = Anot.vdom(root, 'toDOM')
-        groupTree(rootDom, root.children)
-      }
-    }
+
+    var root = this.root
+
+    var rootDom = Anot.vdom(root, 'toDOM')
+    groupTree(rootDom, root.children)
 
     this.mount = true
     var fn
@@ -271,9 +263,9 @@ Render.prototype = {
       }
       for (var i = 0, binding; (binding = bindings[i++]); ) {
         var dir = directives[binding.type]
-        if (!inBrowser && /on|duplex|active|hover/.test(binding.type)) {
-          continue
-        }
+        // if (!inBrowser && /on|duplex|active|hover/.test(binding.type)) {
+        //   continue
+        // }
         if (dir.beforeInit) {
           dir.beforeInit.call(binding)
         }

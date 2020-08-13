@@ -1,4 +1,4 @@
-import { Anot, oneObject, cssHooks, window } from '../../seed/core'
+import { Anot, oneObject, cssHooks } from '../../seed/core'
 
 var cssMap = oneObject('float', 'cssFloat')
 export { cssMap, cssHooks }

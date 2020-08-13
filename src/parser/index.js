@@ -1,4 +1,4 @@
-import { Anot, msie, Cache } from '../seed/core'
+import { Anot, Cache } from '../seed/core'
 import { clearString, stringPool, fill, rfill, dig } from '../vtree/clearString'
 
 var keyMap = Anot.oneObject(
@@ -104,18 +104,6 @@ var rfixIE678 = /__vmodel__\.([^(]+)\(([^)]*)\)/
 export function makeHandle(body) {
   if (rhandleName.test(body)) {
     body = body + '($event)'
-  }
-  /* istanbul ignore if */
-  if (msie < 9) {
-    body = body.replace(rfixIE678, function(a, b, c) {
-      return (
-        '__vmodel__.' +
-        b +
-        '.call(__vmodel__' +
-        (/\S/.test(c) ? ',' + c : '') +
-        ')'
-      )
-    })
   }
   return body
 }

@@ -1,4 +1,4 @@
-import { Anot, ap, platform, modern, isObject } from '../seed/core'
+import { Anot, ap, platform, isObject } from '../seed/core'
 import { Mutation } from './Mutation'
 
 var _splice = ap.splice
@@ -102,9 +102,9 @@ __method__.forEach(function(method) {
 export function listFactory(array, stop, dd) {
   if (!stop) {
     hijackMethods(array)
-    if (modern) {
-      Object.defineProperty(array, '$model', platform.modelAccessor)
-    }
+
+    Object.defineProperty(array, '$model', platform.modelAccessor)
+
     platform.hideProperty(array, '$hashcode', Anot.makeHashCode('$'))
     platform.hideProperty(array, '$events', { __dep__: dd || new Mutation() })
   }

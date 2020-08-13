@@ -5,13 +5,7 @@
  * 2. value属性重写
  * 3. 定时器轮询
  */
-import {
-  Anot,
-  getShortID as markID,
-  window,
-  document,
-  msie
-} from '../../seed/core'
+import { Anot, getShortID as markID } from '../../seed/core'
 import { updateModel } from './updateDataHandle'
 
 export function updateDataEvents(dom, data) {
@@ -48,9 +42,6 @@ export function updateDataEvents(dom, data) {
         //https://github.com/RubyLouvre/Anot/issues/1368#issuecomment-220503284
         events.compositionstart = openComposition
         events.compositionend = closeComposition
-        if (Anot.msie) {
-          events.keyup = updateModelKeyDown
-        }
       }
       break
   }

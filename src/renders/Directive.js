@@ -1,4 +1,4 @@
-import { Anot, inBrowser } from '../seed/core'
+import { Anot } from '../seed/core'
 
 import { Action, protectedMenbers } from '../vmodel/Action'
 
@@ -11,13 +11,13 @@ import { Action, protectedMenbers } from '../vmodel/Action'
 export function Directive(vm, binding, vdom, render) {
   var type = binding.type
   var decorator = Anot.directives[type]
-  if (inBrowser) {
-    var dom = Anot.vdom(vdom, 'toDOM')
-    if (dom.nodeType === 1) {
-      dom.removeAttribute(binding.attrName)
-    }
-    vdom.dom = dom
+
+  var dom = Anot.vdom(vdom, 'toDOM')
+  if (dom.nodeType === 1) {
+    dom.removeAttribute(binding.attrName)
   }
+  vdom.dom = dom
+
   var callback = decorator.update
     ? function(value) {
         if (!render.mount && /css|visible|duplex/.test(type)) {

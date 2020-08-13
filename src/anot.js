@@ -1,5 +1,5 @@
 import { Anot } from './seed/core'
-import './seed/lang.modern'
+import './seed/lang'
 
 import './filters/index'
 import './dom/modern'

@@ -1,16 +1,7 @@
-import {
-  Anot,
-  _slice,
-  eventHooks,
-  modern,
-  window,
-  document,
-  root,
-  getShortID
-} from '../../seed/core'
+import { Anot, _slice, eventHooks, root, getShortID } from '../../seed/core'
 import { canBubbleUp } from './canBubbleUp'
 /* istanbul ignore if */
-var hackSafari = Anot.modern && document.ontouchstart
+var hackSafari = document.ontouchstart
 
 //添加fn.bind, fn.unbind, bind, unbind
 Anot.fn.bind = function(type, fn, phase) {
@@ -54,7 +45,7 @@ Anot.bind = function(elem, type, fn) {
     /* istanbul ignore if */
     if (value.indexOf(type + ':') === -1) {
       //同一种事件只绑定一次
-      if (canBubbleUp[type] || (Anot.modern && focusBlur[type])) {
+      if (canBubbleUp[type] || focusBlur[type]) {
         delegateEvent(type)
       } else {
         Anot._nativeBind(elem, type, dispatch)
@@ -206,16 +197,14 @@ var eventProto = {
   preventDefault: function() {
     var e = this.originalEvent || {}
     e.returnValue = this.returnValue = false
-    if (modern && e.preventDefault) {
-      e.preventDefault()
-    }
+
+    e.preventDefault()
   },
   stopPropagation: function() {
     var e = this.originalEvent || {}
     e.cancelBubble = this.cancelBubble = true
-    if (modern && e.stopPropagation) {
-      e.stopPropagation()
-    }
+
+    e.stopPropagation()
   },
   stopImmediatePropagation: function() {
     this.stopPropagation()

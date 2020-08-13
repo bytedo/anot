@@ -8,7 +8,6 @@ var impDir = Anot.directive('important', {
     throw 'error! no vmodel called ' + name
   },
   update: function(node, attrName, $id) {
-    if (!Anot.inBrowser) return
     var dom = Anot.vdom(node, 'toDOM')
     if (dom.nodeType === 1) {
       dom.removeAttribute(attrName)
