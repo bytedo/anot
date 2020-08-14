@@ -1,4 +1,4 @@
-import { Anot, config } from '../seed/core'
+import { Anot, config, _decode } from '../seed/core'
 import { addScope } from './index'
 var rimprovePriority = /[+-\?]/
 var rinnerValue = /__value__\)$/
@@ -12,7 +12,7 @@ export function parseInterpolate(dir) {
     index = index === -1 ? str.length : index
     var value = str.slice(0, index)
     if (/\S/.test(value)) {
-      tokens.push(Anot.quote(Anot._decode(value)))
+      tokens.push(JSON.stringify(_decode(value)))
     }
     str = str.slice(index + config.openTag.length)
     if (str) {

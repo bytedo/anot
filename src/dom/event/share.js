@@ -1,4 +1,4 @@
-import { Anot, _slice, eventHooks, root, getShortID } from '../../seed/core'
+import { Anot, eventHooks, root, getShortID } from '../../seed/core'
 import { canBubbleUp } from './canBubbleUp'
 /* istanbul ignore if */
 var hackSafari = document.ontouchstart
@@ -11,10 +11,8 @@ Anot.fn.bind = function(type, fn, phase) {
   }
 }
 
-Anot.fn.unbind = function(type, fn, phase) {
+Anot.fn.unbind = function(...args) {
   if (this[0]) {
-    var args = _slice.call(arguments)
-    args.unshift(this[0])
     Anot.unbind.apply(0, args)
   }
   return this

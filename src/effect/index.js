@@ -1,4 +1,4 @@
-import { Anot, Cache } from '../seed/core'
+import { Anot, Cache, root } from '../seed/core'
 import { cssDiff } from '../directives/css'
 import {
   css3,
@@ -16,7 +16,7 @@ var effectDir = Anot.directive('effect', {
       this.value = effect = {
         is: effect
       }
-      Anot.warn('ms-effect的指令值不再支持字符串,必须是一个对象')
+      console.warn('ms-effect的指令值不再支持字符串,必须是一个对象')
     }
     this.value = vdom.effect = effect
     var ok = cssDiff.call(this, effect, this.oldValue)
@@ -42,13 +42,13 @@ var effectDir = Anot.directive('effect', {
       var globalOption = Anot.effects[is]
       if (!globalOption) {
         //如果没有定义特效
-        Anot.warn(is + ' effect is undefined')
+        console.warn(is + ' effect is undefined')
         return
       }
       var finalOption = {}
       var action = actionMaps[option.action]
       if (typeof Effect.prototype[action] !== 'function') {
-        Anot.warn('action is undefined')
+        console.warn('action is undefined')
         return
       }
       //必须预定义特效
@@ -202,7 +202,7 @@ function createAction(action) {
       }
       setTimeout(function() {
         //用xxx-active代替xxx类名的方式 触发CSS3动画
-        var time = Anot.root.offsetWidth === NaN
+        var time = root.offsetWidth === NaN
         elem.addClass(option[lower + 'ActiveClass'])
         //计算动画时长
         time = getAnimationTime(dom)
@@ -237,7 +237,7 @@ Anot.applyEffect = function(dom, vdom, opts) {
       }
     }
     getAction(opts)
-    Anot.directives.effect.update(vdom, curEffect, Anot.shadowCopy({}, opts))
+    Anot.directives.effect.update(vdom, curEffect, Object.assign({}, opts))
   } else if (cb) {
     cb(dom)
   }

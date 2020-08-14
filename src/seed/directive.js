@@ -4,7 +4,7 @@ export var directives = {}
 
 export function directive(name, opts) {
   if (directives[name]) {
-    Anot.warn(name, 'directive have defined! ')
+    console.warn(name, 'directive have defined! ')
   }
   directives[name] = opts
   if (!opts.update) {

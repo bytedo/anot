@@ -31,7 +31,7 @@ Anot.directive('on', {
         '\tvar __vmodel__ = this;',
         '\t' + filters,
         '\treturn ' + body,
-        '}catch(e){Anot.log(e, "in on dir")}'
+        '}catch(e){console.log(e, "in on dir")}'
       ].filter(function(el) {
         return /\S/.test(el)
       })

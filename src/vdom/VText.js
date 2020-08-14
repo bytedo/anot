@@ -1,4 +1,4 @@
-import { Anot } from '../seed/core'
+import { Anot, _decode } from '../seed/core'
 
 export function VText(text) {
   this.nodeName = '#text'
@@ -10,7 +10,7 @@ VText.prototype = {
   toDOM() {
     /* istanbul ignore if*/
     if (this.dom) return this.dom
-    var v = Anot._decode(this.nodeValue)
+    var v = _decode(this.nodeValue)
     return (this.dom = document.createTextNode(v))
   },
   toHTML() {

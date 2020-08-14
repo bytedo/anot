@@ -2,10 +2,9 @@
 //http://www.cnblogs.com/rubylouvre/archive/2012/12/17/2818540.html
 import { Anot, directives, getLongID as markID } from '../seed/core'
 
-function classNames() {
+function classNames(...args) {
   var classes = []
-  for (var i = 0; i < arguments.length; i++) {
-    var arg = arguments[i]
+  for (let arg of args) {
     var argType = typeof arg
     if (argType === 'string' || argType === 'number' || arg === true) {
       classes.push(arg)

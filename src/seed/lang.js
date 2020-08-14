@@ -24,8 +24,6 @@ Anot.type = function(obj) {
     : typeof obj
 }
 
-Anot._quote = JSON.stringify
-
 Anot.isFunction = function(fn) {
   return typeof fn === 'function'
 }
@@ -112,8 +110,9 @@ Anot.mix = Anot.fn.mix = function() {
 export function isArrayLike(obj) {
   /* istanbul ignore if*/
   if (obj && typeof obj === 'object') {
-    var n = obj.length,
-      str = inspect.call(obj)
+    var n = obj.length
+    var str = inspect.call(obj)
+
     if (rarraylike.test(str)) {
       return true
     } else if (str === '[object Object]' && n === n >>> 0) {
@@ -129,7 +128,9 @@ Anot.each = function(obj, fn) {
     var i = 0
     if (isArrayLike(obj)) {
       for (var n = obj.length; i < n; i++) {
-        if (fn(i, obj[i]) === false) break
+        if (fn(i, obj[i]) === false) {
+          break
+        }
       }
     } else {
       for (i in obj) {

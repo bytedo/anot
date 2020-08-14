@@ -1,4 +1,4 @@
-import { Anot, oneObject, cssHooks } from '../../seed/core'
+import { Anot, root, oneObject, cssHooks } from '../../seed/core'
 
 var cssMap = oneObject('float', 'cssFloat')
 export { cssMap, cssHooks }
@@ -11,7 +11,7 @@ Anot.cssName = function(name, host, camelCase) {
   if (cssMap[name]) {
     return cssMap[name]
   }
-  host = host || Anot.root.style || {}
+  host = host || root.style || {}
   for (var i = 0, n = prefixes.length; i < n; i++) {
     camelCase = Anot.camelize(prefixes[i] + name)
     if (camelCase in host) {
@@ -103,7 +103,7 @@ Anot.fn.offsetParent = function() {
   while (offsetParent && Anot.css(offsetParent, 'position') === 'static') {
     offsetParent = offsetParent.offsetParent
   }
-  return Anot(offsetParent || Anot.root)
+  return Anot(offsetParent || root)
 }
 
 /* istanbul ignore next */

@@ -18,7 +18,7 @@ Anot.fireDom = function(elem, type, opts) {
   if (document.createEvent) {
     var hackEvent = document.createEvent('Events')
     hackEvent.initEvent(type, true, true, opts)
-    Anot.shadowCopy(hackEvent, opts)
+    Object.assign(hackEvent, opts)
     elem.dispatchEvent(hackEvent)
   }
 }

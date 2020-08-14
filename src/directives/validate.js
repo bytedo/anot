@@ -44,7 +44,7 @@ var valiDir = Anot.directive('validate', {
       var fn = (vmValidator.onManual = onManual.bind(vmValidator))
       validator.onManual = fn
     } catch (e) {
-      Anot.warn(
+      console.warn(
         '要想使用onManual方法，必须在validate对象预定义一个空的onManual函数'
       )
     }
@@ -94,12 +94,7 @@ var valiDir = Anot.directive('validate', {
     var value = field.value
     var elem = field.dom
     /* istanbul ignore if */
-    if (typeof Promise !== 'function') {
-      //Anot-promise不支持phantomjs
-      Anot.warn(
-        '浏览器不支持原生Promise,请下载并<script src=url>引入\nhttps://github.com/RubyLouvre/Anot/blob/master/test/promise.js'
-      )
-    }
+
     /* istanbul ignore if */
     if (elem.disabled) return
     var rules = field.vdom.rules

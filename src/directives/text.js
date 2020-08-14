@@ -5,7 +5,7 @@ Anot.directive('text', {
   init: function() {
     var node = this.node
     if (node.isVoidTag) {
-      Anot.error('自闭合元素不能使用ms-text')
+      console.error('自闭合元素不能使用ms-text')
     }
     var child = { nodeName: '#text', nodeValue: this.getValue() }
     node.children.splice(0, node.children.length, child)

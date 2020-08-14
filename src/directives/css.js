@@ -8,11 +8,11 @@ var cssDir = Anot.directive('css', {
         //转换成对象
         var b = {}
         newVal.forEach(function(el) {
-          el && Anot.shadowCopy(b, el)
+          el && Object.assign(b, el)
         })
         newVal = b
         if (!arrayWarn[this.type]) {
-          Anot.warn('ms-' + this.type + '指令的值不建议使用数组形式了！')
+          console.warn('ms-' + this.type + '指令的值不建议使用数组形式了！')
           arrayWarn[this.type] = 1
         }
       }

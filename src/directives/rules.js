@@ -33,7 +33,7 @@ function isCorrectDate(value) {
   return false
 }
 //https://github.com/adform/validator.js/blob/master/validator.js
-Anot.shadowCopy(Anot.validators, {
+Object.assign(Anot.validators, {
   pattern: {
     message: '必须匹配{{pattern}}这样的格式',
     get: function(value, field, next) {

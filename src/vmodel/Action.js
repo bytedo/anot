@@ -43,7 +43,7 @@ Action.prototype = {
     try {
       return this.getter.call(scope, scope)
     } catch (e) {
-      Anot.log(this.getter + ' exec error')
+      console.log(this.getter + ' exec error')
     }
   },
 

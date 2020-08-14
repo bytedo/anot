@@ -58,7 +58,7 @@ VElement.prototype = {
     for (var i in props) {
       var val = props[i]
       if (skipFalseAndFunction(val)) {
-        arr.push(i + '=' + Anot.quote(props[i] + ''))
+        arr.push(i + '=' + JSON.stringify(props[i] + ''))
       }
     }
     arr = arr.length ? ' ' + arr.join(' ') : ''

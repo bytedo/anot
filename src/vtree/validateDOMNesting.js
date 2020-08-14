@@ -7,13 +7,13 @@ export function validateDOMNesting(parent, child) {
   if (parentChild) {
     if (parentTag === 'p') {
       if (pNestChild[tag]) {
-        Anot.warn(
+        console.warn(
           'P element can not  add these childlren:\n' + Object.keys(pNestChild)
         )
         return false
       }
     } else if (!parentChild[tag]) {
-      Anot.warn(
+      console.warn(
         parentTag.toUpperCase() +
           'element only add these children:\n' +
           Object.keys(parentChild) +

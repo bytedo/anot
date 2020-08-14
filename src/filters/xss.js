@@ -13,7 +13,7 @@ var rsanitize = {
 //    <a href="jav	ascript:alert('XSS');">IE67chrome</a>
 //    <a href="jav&#x09;ascript:alert('XSS');">IE67chrome</a>
 //    <a href="jav&#x0A;ascript:alert('XSS');">IE67chrome</a>
-export function sanitizeFilter(str) {
+export function xss(str) {
   return str.replace(rscripts, '').replace(ropen, function(a, b) {
     var match = a.toLowerCase().match(/<(\w+)\s/)
     if (match) {

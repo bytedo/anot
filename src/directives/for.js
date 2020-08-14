@@ -19,7 +19,7 @@ Anot.directive('for', {
     str = str.replace(rforAs, function(a, b) {
       /* istanbul ignore if */
       if (!rident.test(b) || rinvalid.test(b)) {
-        Anot.error(
+        console.error(
           'alias ' +
             b +
             ' is invalid --- must be a valid JS identifier which is not a reserved name.'
@@ -226,11 +226,7 @@ function updateItemVm(vm, top) {
 }
 
 function resetVM(vm, a, b) {
-  if (Anot.config.inProxyMode) {
-    vm.$accessors[a].value = NaN
-  } else {
-    vm.$accessors[a].set(NaN)
-  }
+  vm.$accessors[a].value = NaN
 }
 
 function updateList(instance) {

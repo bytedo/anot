@@ -89,7 +89,7 @@ export function addScope(expr, type) {
         }
         return ''
       })
-      var arg = '[' + Anot.quote(filter.trim()) + bracketArgs + ']'
+      var arg = '[' + JSON.stringify(filter.trim()) + bracketArgs + ']'
       return arg
     })
     filters = 'Anot.composeFilters(' + filters + ')(__value__)'
@@ -119,7 +119,7 @@ export function createGetter(expr, type) {
     return new Function('__vmodel__', 'return ' + body + ';')
     /* istanbul ignore next */
   } catch (e) {
-    Anot.log('parse getter: [', expr, body, ']error')
+    console.log('parse getter: [', expr, body, ']error')
     return Anot.noop
   }
 }
@@ -131,12 +131,12 @@ export function createGetter(expr, type) {
 export function createSetter(expr, type) {
   var arr = addScope(expr, type)
   var body =
-    'try{ ' + arr[0] + ' = __value__}catch(e){Anot.log(e, "in on dir")}'
+    'try{ ' + arr[0] + ' = __value__}catch(e){console.log(e, "in on dir")}'
   try {
     return new Function('__vmodel__', '__value__', body + ';')
     /* istanbul ignore next */
   } catch (e) {
-    Anot.log('parse setter: ', expr, ' error')
+    console.log('parse setter: ', expr, ' error')
     return Anot.noop
   }
 }

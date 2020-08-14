@@ -79,9 +79,9 @@ export var Computed = (function(_super) {
     }
     return true
   }
-  cp.set = function() {
+  cp.set = function(...args) {
     if (this.setter) {
-      Anot.transaction(this.setter, this.vm, arguments)
+      Anot.transaction(this.setter, this.vm, args)
     }
   }
   cp.get = function() {

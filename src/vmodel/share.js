@@ -18,17 +18,17 @@ import { Computed } from './Computed'
 Anot.define = function(definition) {
   var $id = definition.$id
   if (!$id) {
-    Anot.error('vm.$id must be specified')
+    console.error('vm.$id must be specified')
   }
   if (Anot.vmodels[$id]) {
-    Anot.warn('error:[' + $id + '] had defined!')
+    console.warn('error:[' + $id + '] had defined!')
   }
   var vm = platform.modelFactory(definition)
   return (Anot.vmodels[$id] = vm)
 }
 
 /**
- * 在未来的版本,Anot改用Proxy来创建VM,因此
+ * Anot改用Proxy来创建VM,因此
  */
 
 export function IProxy(definition, dd) {
@@ -39,16 +39,12 @@ export function IProxy(definition, dd) {
   this.$events = {
     __dep__: dd || new Mutation(this.$id)
   }
-  if (Anot.config.inProxyMode) {
-    delete this.$mutations
-    this.$accessors = {}
-    this.$computed = {}
-    this.$track = ''
-  } else {
-    this.$accessors = {
-      $model: modelAccessor
-    }
-  }
+
+  delete this.$mutations
+  this.$accessors = {}
+  this.$computed = {}
+  this.$track = ''
+
   if (dd === void 0) {
     this.$watch = platform.watchFactory(this.$events)
     this.$fire = platform.fireFactory(this.$events)
@@ -106,14 +102,14 @@ export function canHijack(key, val, $proxyItemBackdoor) {
     if ($proxyItemBackdoor) {
       if (!$proxyItemBackdoorMap[key]) {
         $proxyItemBackdoorMap[key] = 1
-        Anot.warn(`ms-for中的变量${key}不再建议以$为前缀`)
+        console.warn(`ms-for中的变量${key}不再建议以$为前缀`)
       }
       return true
     }
     return false
   }
   if (val == null) {
-    Anot.warn('定义vmodel时' + key + '的属性值不能为null undefine')
+    console.warn('定义vmodel时' + key + '的属性值不能为null undefine')
     return true
   }
   if (/error|date|function|regexp/.test(Anot.type(val))) {
@@ -140,7 +136,7 @@ platform.createProxy = createProxy
 platform.itemFactory = function itemFactory(before, after) {
   var keyMap = before.$model
   var core = new IProxy(keyMap)
-  var state = Anot.shadowCopy(core.$accessors, before.$accessors) //防止互相污染
+  var state = Object.assign(core.$accessors, before.$accessors) //防止互相污染
   var data = after.data
   //core是包含系统属性的对象
   //keyMap是不包含系统属性的对象, keys

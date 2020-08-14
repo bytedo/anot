@@ -1,14 +1,8 @@
-import { Anot, config } from '../seed/core'
+import { Anot } from '../seed/core'
 
 Anot.pendingActions = []
 Anot.uniqActions = {}
 Anot.inTransaction = 0
-config.trackDeps = false
-Anot.track = function() {
-  if (config.trackDeps) {
-    Anot.log.apply(Anot, arguments)
-  }
-}
 
 /**
  * Batch is a pseudotransaction, just for purposes of memoizing ComputedValues when nothing else does.
@@ -38,7 +32,7 @@ export function propagateChanged(target) {
 export function reportObserved(target) {
   var action = Anot.trackingAction || null
   if (action !== null) {
-    Anot.track('征收到', target.expr)
+    // Anot.track('征收到', target.expr)
     action.mapIDs[target.uuid] = target
   }
 }
@@ -52,7 +46,7 @@ export function collectDeps(action, getter) {
     targetStack.push(preAction)
   }
   Anot.trackingAction = action
-  Anot.track('【action】', action.type, action.expr, '开始征收依赖项')
+  // Anot.track('【action】', action.type, action.expr, '开始征收依赖项')
   //多个observe持有同一个action
   action.mapIDs = {} //重新收集依赖
   var hasError = true,
@@ -62,7 +56,7 @@ export function collectDeps(action, getter) {
     hasError = false
   } finally {
     if (hasError) {
-      Anot.warn('collectDeps fail', getter + '')
+      console.warn('collectDeps fail', getter + '')
       action.mapIDs = {}
       Anot.trackingAction = preAction
     } else {
@@ -71,7 +65,7 @@ export function collectDeps(action, getter) {
       try {
         resetDeps(action)
       } catch (e) {
-        Anot.warn(e)
+        console.warn(e)
       }
     }
     return result

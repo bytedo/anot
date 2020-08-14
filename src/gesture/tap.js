@@ -1,5 +1,6 @@
+import { root } from '../seed/core'
 import { Recognizer } from './recognizer'
-var root = Anot.root
+
 var supportPointer = !!navigator.pointerEnabled || !!navigator.msPointerEnabled
 // 支持pointer的设备可用样式来取消click事件的300毫秒延迟
 if (supportPointer) {

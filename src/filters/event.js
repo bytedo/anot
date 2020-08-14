@@ -19,15 +19,13 @@ var keys = {
   right: 39,
   down: 40
 }
-for (var name in keys) {
-  ;(function(filter, key) {
-    eventFilters[filter] = function(e) {
-      if (e.which !== key) {
-        e.$return = true
-      }
-      return e
+for (let name in keys) {
+  eventFilters[name] = function(e) {
+    if (e.which !== keys[name]) {
+      e.$return = true
     }
-  })(name, keys[name])
+    return e
+  }
 }
 
 export { eventFilters }

@@ -55,7 +55,7 @@ Mutation.prototype = {
   },
 
   collect() {
-    Anot.track(name, '被收集')
+    // Anot.track(name, '被收集')
     reportObserved(this)
   },
 

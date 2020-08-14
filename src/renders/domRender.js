@@ -50,7 +50,9 @@ Render.prototype = {
     } else if (typeof this.root === 'string') {
       vnodes = fromString(this.root) //转换虚拟DOM
     } else {
-      return Anot.warn('Anot.scan first argument must element or HTML string')
+      return console.warn(
+        'Anot.scan first argument must element or HTML string'
+      )
     }
 
     this.root = vnodes[0]
@@ -136,7 +138,7 @@ Render.prototype = {
         var type = attr.match(/\w+/g)[1]
         type = eventMap[type] || type
         if (!directives[type]) {
-          Anot.warn(attr + ' has not registered!')
+          console.warn(attr + ' has not registered!')
         }
         hasDir = true
       }
@@ -155,7 +157,7 @@ Render.prototype = {
       var templateCaches = Anot.serverTemplates
       var temp = templateCaches && templateCaches[$id]
       if (temp) {
-        Anot.log('前端再次渲染后端传过来的模板')
+        console.log('前端再次渲染后端传过来的模板')
         var node = fromString(temp)[0]
         for (var i in node) {
           vdom[i] = node[i]

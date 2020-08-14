@@ -36,7 +36,7 @@ export var updateDataActions = {
     var field = this
     var array = field.value
     if (!Array.isArray(array)) {
-      Anot.warn('ms-duplex应用于checkbox上要对应一个数组')
+      console.warn('ms-duplex应用于checkbox上要对应一个数组')
       array = [array]
     }
     var method = field.dom.checked ? 'ensure' : 'remove'

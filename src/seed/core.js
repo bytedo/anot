@@ -13,12 +13,6 @@ Anot.init = function(el) {
 
 Anot.fn = Anot.prototype = Anot.init.prototype
 
-export function shadowCopy(destination, source) {
-  for (var property in source) {
-    destination[property] = source[property]
-  }
-  return destination
-}
 export var rword = /[^, ]+/g
 export var rnowhite = /\S+/g //存在非空字符
 export var platform = {} //用于放置平台差异的方法与属性
@@ -39,34 +33,16 @@ export function oneObject(array, val) {
 }
 
 var op = Object.prototype
-export function quote(str) {
-  return Anot._quote(str)
-}
+
 export var inspect = op.toString
 export var ohasOwn = op.hasOwnProperty
 export var ap = Array.prototype
 
-var hasConsole = typeof console === 'object'
-Anot.config = { debug: true }
-export function log() {
-  if (hasConsole && Anot.config.debug) {
-    Function.apply.call(console.log, console, arguments)
-  }
-}
 export { Cache, directive, directives, delayCompileNodes, root }
-export function warn() {
-  if (hasConsole && Anot.config.debug) {
-    var method = console.warn || console.log
-    // http://qiang106.iteye.com/blog/1721425
-    Function.apply.call(method, console, arguments)
-  }
-}
-export function error(str, e) {
-  throw (e || Error)(str)
-}
+
 export function noop() {}
 export function isObject(a) {
-  return a !== null && typeof a === 'object'
+  return a && typeof a === 'object'
 }
 
 export function range(start, end, step) {
@@ -104,18 +80,14 @@ export function camelize(target) {
   })
 }
 
-export var _slice = ap.slice
-export function slice(nodes, start, end) {
-  return _slice.call(nodes, start, end)
-}
-
-var rhashcode = /\d\.\d{4}/
-//生成UUID http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-export function makeHashCode(prefix) {
-  /* istanbul ignore next*/
-  prefix = prefix || 'Anot'
-  /* istanbul ignore next*/
-  return String(Math.random() + Math.random()).replace(rhashcode, prefix)
+export function makeHashCode(prefix = 'anot') {
+  return (
+    prefix +
+    crypto
+      .getRandomValues(new Uint8Array(8))
+      .reduce((a, b) => a + b.toString(16), '')
+      .slice(0, 12)
+  )
 }
 //生成事件回调的UUID(用户通过ms-on指令)
 export function getLongID(fn) {
@@ -148,9 +120,32 @@ export function createFragment() {
   return document.createDocumentFragment()
 }
 
+export function _decode(str) {
+  if (rentities.test(str)) {
+    temp.innerHTML = str
+    return temp.innerText || temp.textContent
+  }
+  return str
+}
+
 var rentities = /&[a-z0-9#]{2,10};/
 var temp = document.createElement('div')
-shadowCopy(Anot, {
+
+//============== config ============
+export var config = {
+  openTag: '{{',
+  closeTag: '}}',
+  rtext: /\{\{(.+?)\}\}/g,
+  rexpr: /\{\{([\s\S]*)\}\}/
+}
+
+export function createAnchor(nodeValue) {
+  return document.createComment(nodeValue)
+}
+
+//============  config ============
+
+Object.assign(Anot, {
   Array: {
     merge: function(target, other) {
       //合并两个数组 Anot2新增
@@ -176,78 +171,22 @@ shadowCopy(Anot, {
   evaluatorPool: new Cache(888),
   parsers: {
     number: function(a) {
-      return a === '' ? '' : parseFloat(a) || 0
+      return a === '' ? '' : +a || 0
     },
     string: function(a) {
       return a === null || a === void 0 ? '' : a + ''
     },
     boolean: function(a) {
-      if (a === '') return a
+      if (a === '') {
+        return a
+      }
       return a === 'true' || a === '1'
     }
   },
-  _decode: function _decode(str) {
-    if (rentities.test(str)) {
-      temp.innerHTML = str
-      return temp.innerText || temp.textContent
-    }
-    return str
-  }
-})
-
-//============== config ============
-export function config(settings) {
-  for (var p in settings) {
-    var val = settings[p]
-    if (typeof config.plugins[p] === 'function') {
-      config.plugins[p](val)
-    } else {
-      config[p] = val
-    }
-  }
-  return this
-}
-
-var plugins = {
-  interpolate: function(array) {
-    var openTag = array[0]
-    var closeTag = array[1]
-    if (openTag === closeTag) {
-      throw new SyntaxError('interpolate openTag cannot equal to closeTag')
-    }
-    var str = openTag + 'test' + closeTag
-
-    if (/[<>]/.test(str)) {
-      throw new SyntaxError('interpolate cannot contains "<" or ">"')
-    }
-
-    config.openTag = openTag
-    config.closeTag = closeTag
-    var o = escapeRegExp(openTag)
-    var c = escapeRegExp(closeTag)
-
-    config.rtext = new RegExp(o + '(.+?)' + c, 'g')
-    config.rexpr = new RegExp(o + '([\\s\\S]*)' + c)
-  }
-}
-export function createAnchor(nodeValue) {
-  return document.createComment(nodeValue)
-}
-config.plugins = plugins
-config({
-  interpolate: ['{{', '}}'],
-  debug: true
-})
-//============  config ============
-
-shadowCopy(Anot, {
-  shadowCopy,
 
   oneObject,
   inspect,
   ohasOwn,
-  rword,
-  version: 1,
   vmodels: {},
 
   directives,
@@ -258,23 +197,12 @@ shadowCopy(Anot, {
   validators,
   cssHooks,
 
-  log,
   noop,
-  warn,
-  error,
-  config,
-
-  root,
-  document,
-  window,
 
   isObject,
   range,
-  slice,
   hyphen,
   camelize,
-  escapeRegExp,
-  quote,
 
   makeHashCode
 })

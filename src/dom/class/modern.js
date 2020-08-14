@@ -13,7 +13,7 @@ import { Anot, rnowhite, rword } from '../../seed/core'
   }
 })
 
-Anot.shadowCopy(Anot.fn, {
+Object.assign(Anot.fn, {
   hasClass: function(cls) {
     var el = this[0] || {}
     //IE10+, chrome8+, firefox3.6+, safari5.1+,opera11.5+支持classList,

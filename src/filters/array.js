@@ -1,4 +1,4 @@
-import { Anot } from '../seed/core'
+import { Anot, escapeRegExp } from '../seed/core'
 import { $$skipArray } from '../vmodel/reserved'
 
 /*
@@ -64,10 +64,11 @@ function __repeat(array, isArray, cb) {
     }
   }
 }
-export function filterBy(array, search) {
+export function filterBy(array, search, ...args) {
   var type = Anot.type(array)
-  if (type !== 'array' && type !== 'object') throw 'filterBy只能处理对象或数组'
-  var args = Anot.slice(arguments, 2)
+  if (type !== 'array' && type !== 'object') {
+    throw 'filterBy只能处理对象或数组'
+  }
   var stype = Anot.type(search)
   if (stype === 'function') {
     var criteria = search._orig || search
@@ -75,7 +76,7 @@ export function filterBy(array, search) {
     if (search === '') {
       return array
     } else {
-      var reg = new RegExp(Anot.escapeRegExp(search), 'i')
+      var reg = new RegExp(escapeRegExp(search), 'i')
       criteria = function(el) {
         return reg.test(el)
       }

@@ -55,6 +55,6 @@ function continueScan(instance, vdom) {
     instance.fragment,
     instance.vm
   ))
-  Anot.shadowCopy(vdom, innerRender.root)
+  Object.assign(vdom, innerRender.root)
   delete vdom.nodeValue
 }
