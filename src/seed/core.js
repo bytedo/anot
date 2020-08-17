@@ -24,8 +24,8 @@ export function oneObject(array, val) {
   if (typeof array === 'string') {
     array = array.match(rword) || []
   }
-  var result = {},
-    value = val !== void 0 ? val : 1
+  var result = {}
+  var value = val !== void 0 ? val : 1
   for (var i = 0, n = array.length; i < n; i++) {
     result[array[i]] = value
   }
@@ -114,9 +114,10 @@ export var validators = {}
 export var cssHooks = {}
 
 window.Anot = Anot
+Anot.platform = platform
 
+/* istanbul ignore next  */
 export function createFragment() {
-  /* istanbul ignore next  */
   return document.createDocumentFragment()
 }
 

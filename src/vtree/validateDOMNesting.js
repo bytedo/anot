@@ -1,5 +1,29 @@
 import { Anot, oneObject } from '../seed/core'
 
+var pNestChild = oneObject('div,ul,ol,dl,table,h1,h2,h3,h4,h5,h6,form,fieldset')
+var tNestChild = makeObject('tr,style,script')
+var nestObject = {
+  p: pNestChild,
+  select: makeObject('option,optgroup,#text'),
+  optgroup: makeObject('option,#text'),
+  option: makeObject('#text'),
+  tr: makeObject('th,td,style,script'),
+
+  tbody: tNestChild,
+  tfoot: tNestChild,
+  thead: tNestChild,
+  colgroup: makeObject('col'),
+  // table: oneObject('caption,colgroup,tbody,thead,tfoot,style,script,template,#document-fragment'),
+  head: makeObject(
+    'base,basefont,bgsound,link,style,script,meta,title,noscript,noframes'
+  ),
+  html: oneObject('head,body')
+}
+
+function makeObject(str) {
+  return oneObject(str + ',template,#document-fragment,#comment')
+}
+
 export function validateDOMNesting(parent, child) {
   var parentTag = parent.nodeName
   var tag = child.nodeName
@@ -8,16 +32,16 @@ export function validateDOMNesting(parent, child) {
     if (parentTag === 'p') {
       if (pNestChild[tag]) {
         console.warn(
-          'P element can not  add these childlren:\n' + Object.keys(pNestChild)
+          'P标签节点不允许以下类型的子节点:\n' + Object.keys(pNestChild)
         )
         return false
       }
     } else if (!parentChild[tag]) {
       console.warn(
         parentTag.toUpperCase() +
-          'element only add these children:\n' +
+          '标签节点只能增加以下子节点:\n' +
           Object.keys(parentChild) +
-          '\nbut you add ' +
+          '\n当前子节点为:' +
           tag.toUpperCase() +
           ' !!'
       )
@@ -25,39 +49,4 @@ export function validateDOMNesting(parent, child) {
     }
   }
   return true
-}
-
-function makeObject(str) {
-  return oneObject(str + ',template,#document-fragment,#comment')
-}
-var pNestChild = oneObject('div,ul,ol,dl,table,h1,h2,h3,h4,h5,h6,form,fieldset')
-var tNestChild = makeObject('tr,style,script')
-var nestObject = {
-  p: pNestChild,
-  // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-inselect
-  select: makeObject('option,optgroup,#text'),
-  optgroup: makeObject('option,#text'),
-  option: makeObject('#text'),
-  // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intd
-  // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-incaption
-  // No special behavior since these rules fall back to "in body" mode for
-  // all except special table nodes which cause bad parsing behavior anyway.
-
-  // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intr
-  tr: makeObject('th,td,style,script'),
-
-  // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intbody
-  tbody: tNestChild,
-  tfoot: tNestChild,
-  thead: tNestChild,
-  // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-incolgroup
-  colgroup: makeObject('col'),
-  // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intable
-  // table: oneObject('caption,colgroup,tbody,thead,tfoot,style,script,template,#document-fragment'),
-  // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-inhead
-  head: makeObject(
-    'base,basefont,bgsound,link,style,script,meta,title,noscript,noframes'
-  ),
-  // https://html.spec.whatwg.org/multipage/semantics.html#the-html-element
-  html: oneObject('head,body')
 }

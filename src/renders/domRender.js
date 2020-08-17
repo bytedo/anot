@@ -3,13 +3,15 @@ import { fromDOM } from '../vtree/fromDOM'
 import { fromString } from '../vtree/fromString'
 
 import { VFragment } from '../vdom/VFragment'
-import { Directive } from './Directive'
+import { Directive } from './directive'
 
 import { orphanTag } from '../vtree/orphanTag'
 import { parseAttributes, eventMap } from '../parser/attributes'
 import { parseInterpolate } from '../parser/interpolate'
 
 import { startWith, groupTree, dumpTree, getRange } from './share'
+
+var viewID
 
 /**
  * 生成一个渲染器,并作为它第一个遇到的ms-controller对应的VM的$render属性
@@ -25,17 +27,18 @@ Anot.scan = function(node, vm, beforeReady) {
 /**
  * Anot.scan 的内部实现
  */
-function Render(node, vm, beforeReady) {
-  this.root = node //如果传入的字符串,确保只有一个标签作为根节点
-  this.vm = vm
-  this.beforeReady = beforeReady
-  this.bindings = [] //收集待加工的绑定属性
-  this.callbacks = []
-  this.directives = []
-  this.init()
-}
 
-Render.prototype = {
+class Render {
+  constructor(node, vm, beforeReady) {
+    this.root = node //如果传入的字符串,确保只有一个标签作为根节点
+    this.vm = vm
+    this.beforeReady = beforeReady
+    this.bindings = [] //收集待加工的绑定属性
+    this.callbacks = []
+    this.directives = []
+    this.init()
+  }
+
   /**
    * 开始扫描指定区域
    * 收集绑定属性
@@ -50,15 +53,13 @@ Render.prototype = {
     } else if (typeof this.root === 'string') {
       vnodes = fromString(this.root) //转换虚拟DOM
     } else {
-      return console.warn(
-        'Anot.scan first argument must element or HTML string'
-      )
+      return console.warn('Anot.scan()第1个参数,只能是节点对象或节点字符串')
     }
 
     this.root = vnodes[0]
     this.vnodes = vnodes
     this.scanChildren(vnodes, this.vm, true)
-  },
+  }
 
   scanChildren(children, scope, isRoot) {
     for (var i = 0; i < children.length; i++) {
@@ -81,7 +82,7 @@ Render.prototype = {
     if (isRoot) {
       this.complete()
     }
-  },
+  }
 
   /**
    * 从文本节点获取指令
@@ -99,7 +100,7 @@ Render.prototype = {
         }
       ])
     }
-  },
+  }
 
   /**
    * 从注释节点获取指令
@@ -112,7 +113,7 @@ Render.prototype = {
     if (startWith(vdom.nodeValue, 'ms-for:')) {
       this.getForBinding(vdom, scope, parentChildren)
     }
-  },
+  }
 
   /**
    * 从元素节点的nodeName与属性中获取指令
@@ -223,7 +224,7 @@ Render.prototype = {
     ) {
       this.scanChildren(children, scope, false)
     }
-  },
+  }
 
   /**
    * 将绑定属性转换为指令
@@ -245,7 +246,7 @@ Render.prototype = {
       fn()
     }
     this.optimizeDirectives()
-  },
+  }
 
   /**
    * 将收集到的绑定属性进行深加工,最后转换指令
@@ -276,7 +277,7 @@ Render.prototype = {
         this.directives.push(directive)
       }
     }
-  },
+  }
 
   /**
    * 修改指令的update与callback方法,让它们以后执行时更加高效
@@ -288,12 +289,13 @@ Render.prototype = {
       el.update = newUpdate
       el._isScheduled = false
     }
-  },
-  update: function() {
+  }
+
+  update() {
     for (var i = 0, el; (el = this.directives[i++]); ) {
       el.update()
     }
-  },
+  }
 
   /**
    * 销毁所有指令
@@ -308,7 +310,7 @@ Render.prototype = {
     for (let i in this) {
       if (i !== 'dispose') delete this[i]
     }
-  },
+  }
 
   /**
    * 将循环区域转换为for指令
@@ -341,7 +343,7 @@ Render.prototype = {
         parentChildren
       }
     ])
-  },
+  }
 
   /**
    * 在带ms-for元素节点旁添加两个注释节点,组成循环区域
@@ -370,7 +372,6 @@ Render.prototype = {
     this.getForBinding(begin, scope, parentChildren, props['data-for-rendered'])
   }
 }
-var viewID
 
 function newUpdate() {
   var oldVal = this.beforeUpdate()

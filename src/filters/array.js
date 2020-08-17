@@ -1,10 +1,6 @@
 import { Anot, escapeRegExp } from '../seed/core'
 import { $$skipArray } from '../vmodel/reserved'
 
-/*
-https://github.com/hufyhang/orderBy/blob/master/index.js
-*/
-
 export function orderBy(array, by, decend) {
   var type = Anot.type(array)
   if (type !== 'array' && type !== 'object') throw 'orderBy只能处理对象或数组'
@@ -88,14 +84,7 @@ export function filterBy(array, search, ...args) {
   var target = isArray ? [] : {}
   __repeat(array, isArray, function(key) {
     var val = array[key]
-    if (
-      criteria.apply(
-        {
-          key: key
-        },
-        [val, key].concat(args)
-      )
-    ) {
+    if (criteria.apply({ key }, [val, key].concat(args))) {
       if (isArray) {
         target.push(val)
       } else {
@@ -121,7 +110,9 @@ export function selectBy(data, array, defaults) {
 
 export function limitBy(input, limit, begin) {
   var type = Anot.type(input)
-  if (type !== 'array' && type !== 'object') throw 'limitBy只能处理对象或数组'
+  if (type !== 'array' && type !== 'object') {
+    throw 'limitBy只能处理对象或数组'
+  }
   //必须是数值
   if (typeof limit !== 'number') {
     return input

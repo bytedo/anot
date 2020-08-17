@@ -6,22 +6,20 @@ var rarraylike = /(Array|List|Collection|Map|Arguments|Set)\]$/
 
 // Anot.type
 var class2type = {}
-'Boolean Number String Function Array Date RegExp Object Error'.replace(
-  Anot.rword,
-  function(name) {
+'Boolean,Number,String,Function,Array,Date,RegExp,Object,Error,AsyncFunction,Promise,Generator,GeneratorFunction'
+  .split(',')
+  .forEach(function(name) {
     class2type['[object ' + name + ']'] = name.toLowerCase()
-  }
-)
+  })
 
 Anot.type = function(obj) {
-  //取得目标的类型
-  if (obj == null) {
-    return String(obj)
+  if (obj) {
+    // 早期的webkit内核浏览器实现了已废弃的ecma262v4标准，可以将正则字面量当作函数使用，因此typeof在判定正则时会返回function
+    return typeof obj === 'object' || typeof obj === 'function'
+      ? class2type[inspect.call(obj)] || 'object'
+      : typeof obj
   }
-  // 早期的webkit内核浏览器实现了已废弃的ecma262v4标准，可以将正则字面量当作函数使用，因此typeof在判定正则时会返回function
-  return typeof obj === 'object' || typeof obj === 'function'
-    ? class2type[inspect.call(obj)] || 'object'
-    : typeof obj
+  return String(obj)
 }
 
 Anot.isFunction = function(fn) {
@@ -123,8 +121,8 @@ export function isArrayLike(obj) {
 }
 
 Anot.each = function(obj, fn) {
+  //排除null, undefined
   if (obj) {
-    //排除null, undefined
     var i = 0
     if (isArrayLike(obj)) {
       for (var n = obj.length; i < n; i++) {
