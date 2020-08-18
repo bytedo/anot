@@ -1,7 +1,7 @@
-import { Anot, Cache } from '../seed/core'
+import { Anot, Cache, oneObject } from '../seed/core'
 import { clearString, stringPool, fill, rfill, dig } from '../vtree/clearString'
 
-var keyMap = Anot.oneObject(
+var keyMap = oneObject(
   'break,case,catch,continue,debugger,default,delete,do,else,false,' +
   'finally,for,function,if,in,instanceof,new,null,return,switch,this,' +
   'throw,true,try,typeof,var,void,while,with,' /* 关键字*/ +

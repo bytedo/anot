@@ -1,5 +1,5 @@
-import { Anot, directives } from '../seed/core'
-export var eventMap = Anot.oneObject(
+import { Anot, directives, oneObject } from '../seed/core'
+export var eventMap = oneObject(
   'animationend,blur,change,input,' +
     'click,dblclick,focus,keydown,keypress,keyup,mousedown,mouseenter,' +
     'mouseleave,mousemove,mouseout,mouseover,mouseup,scan,scroll,submit',

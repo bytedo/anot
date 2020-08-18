@@ -1,4 +1,4 @@
-import { Anot } from '../seed/core'
+import { Anot, oneObject } from '../seed/core'
 
 export function VElement(type, props, children, isVoidTag) {
   this.nodeName = type
@@ -84,7 +84,7 @@ function createSVG(type) {
   return document.createElementNS('http://www.w3.org/2000/svg', type)
 }
 
-var svgTags = Anot.oneObject(
+var svgTags = oneObject(
   'circle,defs,ellipse,image,line,' +
     'path,polygon,polyline,rect,symbol,text,use,g,svg'
 )

@@ -20,7 +20,7 @@ Anot.parseHTML = function(html) {
   html = html.replace(rxhtml, '<$1></$2>').trim()
   var hasCache = htmlCache.get(html)
   if (hasCache) {
-    return Anot.cloneNode(hasCache)
+    return hasCache.cloneNode(true)
   }
   var vnodes = fromString(html)
   for (var i = 0, el; (el = vnodes[i++]); ) {

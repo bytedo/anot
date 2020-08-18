@@ -1,4 +1,4 @@
-import { Anot } from '../seed/core'
+import Anot from '../seed/index'
 
 Anot.directive('expr', {
   update: function(vdom, value) {

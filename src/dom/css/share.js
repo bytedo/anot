@@ -5,7 +5,7 @@ export { cssMap, cssHooks }
 Anot.cssNumber = oneObject(
   'animationIterationCount,columnCount,order,flex,flexGrow,flexShrink,fillOpacity,fontWeight,lineHeight,opacity,orphans,widows,zIndex,zoom'
 )
-var prefixes = ['', '-webkit-', '-o-', '-moz-', '-ms-']
+var prefixes = ['', '-webkit-', '-moz-']
 /* istanbul ignore next */
 Anot.cssName = function(name, host, camelCase) {
   if (cssMap[name]) {
@@ -171,103 +171,97 @@ function showHidden(node, array) {
   }
 }
 /* istanbul ignore next*/
-Anot.each(
-  {
-    Width: 'width',
-    Height: 'height'
-  },
-  function(name, method) {
-    var clientProp = 'client' + name,
-      scrollProp = 'scroll' + name,
-      offsetProp = 'offset' + name
-    cssHooks[method + ':get'] = function(node, which, override) {
-      var boxSizing = -4
-      if (typeof override === 'number') {
-        boxSizing = override
-      }
-      which = name === 'Width' ? ['Left', 'Right'] : ['Top', 'Bottom']
-      var ret = node[offsetProp] // border-box 0
-      if (boxSizing === 2) {
-        // margin-box 2
-        return (
-          ret +
-          Anot.css(node, 'margin' + which[0], true) +
-          Anot.css(node, 'margin' + which[1], true)
-        )
-      }
-      if (boxSizing < 0) {
-        // padding-box  -2
-        ret =
-          ret -
-          Anot.css(node, 'border' + which[0] + 'Width', true) -
-          Anot.css(node, 'border' + which[1] + 'Width', true)
-      }
-      if (boxSizing === -4) {
-        // content-box -4
-        ret =
-          ret -
-          Anot.css(node, 'padding' + which[0], true) -
-          Anot.css(node, 'padding' + which[1], true)
-      }
-      return ret
+Anot.each({ Width: 'width', Height: 'height' }, function(name, method) {
+  var clientProp = 'client' + name,
+    scrollProp = 'scroll' + name,
+    offsetProp = 'offset' + name
+  cssHooks[method + ':get'] = function(node, which, override) {
+    var boxSizing = -4
+    if (typeof override === 'number') {
+      boxSizing = override
     }
-    cssHooks[method + '&get'] = function(node) {
-      var hidden = []
-      showHidden(node, hidden)
-      var val = cssHooks[method + ':get'](node)
-      for (var i = 0, obj; (obj = hidden[i++]); ) {
-        node = obj.node
-        for (var n in obj) {
-          if (typeof obj[n] === 'string') {
-            node.style[n] = obj[n]
-          }
-        }
-      }
-      return val
-    }
-    Anot.fn[method] = function(value) {
-      //会忽视其display
-      var node = this[0]
-      if (arguments.length === 0) {
-        if (node.setTimeout) {
-          //取得窗口尺寸
-          return (
-            node['inner' + name] ||
-            node.document.documentElement[clientProp] ||
-            node.document.body[clientProp]
-          ) //IE6下前两个分别为undefined,0
-        }
-        if (node.nodeType === 9) {
-          //取得页面尺寸
-          var doc = node.documentElement
-          //FF chrome    html.scrollHeight< body.scrollHeight
-          //IE 标准模式 : html.scrollHeight> body.scrollHeight
-          //IE 怪异模式 : html.scrollHeight 最大等于可视窗口多一点？
-          return Math.max(
-            node.body[scrollProp],
-            doc[scrollProp],
-            node.body[offsetProp],
-            doc[offsetProp],
-            doc[clientProp]
-          )
-        }
-        return cssHooks[method + '&get'](node)
-      } else {
-        return this.css(method, value)
-      }
-    }
-    Anot.fn['inner' + name] = function() {
-      return cssHooks[method + ':get'](this[0], void 0, -2)
-    }
-    Anot.fn['outer' + name] = function(includeMargin) {
-      return cssHooks[method + ':get'](
-        this[0],
-        void 0,
-        includeMargin === true ? 2 : 0
+    which = name === 'Width' ? ['Left', 'Right'] : ['Top', 'Bottom']
+    var ret = node[offsetProp] // border-box 0
+    if (boxSizing === 2) {
+      // margin-box 2
+      return (
+        ret +
+        Anot.css(node, 'margin' + which[0], true) +
+        Anot.css(node, 'margin' + which[1], true)
       )
     }
+    if (boxSizing < 0) {
+      // padding-box  -2
+      ret =
+        ret -
+        Anot.css(node, 'border' + which[0] + 'Width', true) -
+        Anot.css(node, 'border' + which[1] + 'Width', true)
+    }
+    if (boxSizing === -4) {
+      // content-box -4
+      ret =
+        ret -
+        Anot.css(node, 'padding' + which[0], true) -
+        Anot.css(node, 'padding' + which[1], true)
+    }
+    return ret
   }
-)
+  cssHooks[method + '&get'] = function(node) {
+    var hidden = []
+    showHidden(node, hidden)
+    var val = cssHooks[method + ':get'](node)
+    for (var i = 0, obj; (obj = hidden[i++]); ) {
+      node = obj.node
+      for (var n in obj) {
+        if (typeof obj[n] === 'string') {
+          node.style[n] = obj[n]
+        }
+      }
+    }
+    return val
+  }
+  Anot.fn[method] = function(value) {
+    //会忽视其display
+    var node = this[0]
+    if (arguments.length === 0) {
+      if (node.setTimeout) {
+        //取得窗口尺寸
+        return (
+          node['inner' + name] ||
+          node.document.documentElement[clientProp] ||
+          node.document.body[clientProp]
+        ) //IE6下前两个分别为undefined,0
+      }
+      if (node.nodeType === 9) {
+        //取得页面尺寸
+        var doc = node.documentElement
+        //FF chrome    html.scrollHeight< body.scrollHeight
+        //IE 标准模式 : html.scrollHeight> body.scrollHeight
+        //IE 怪异模式 : html.scrollHeight 最大等于可视窗口多一点？
+        return Math.max(
+          node.body[scrollProp],
+          doc[scrollProp],
+          node.body[offsetProp],
+          doc[offsetProp],
+          doc[clientProp]
+        )
+      }
+      return cssHooks[method + '&get'](node)
+    } else {
+      return this.css(method, value)
+    }
+  }
+  Anot.fn['inner' + name] = function() {
+    return cssHooks[method + ':get'](this[0], void 0, -2)
+  }
+  Anot.fn['outer' + name] = function(includeMargin) {
+    return cssHooks[method + ':get'](
+      this[0],
+      void 0,
+      includeMargin === true ? 2 : 0
+    )
+  }
+})
 
 export function getWindow(node) {
   return node.window || node.defaultView || node.parentWindow || false

@@ -4,7 +4,7 @@ import {
   reportObserved,
   propagateChanged
 } from './transaction'
-import { Anot, platform } from '../seed/core'
+import { Anot, platform, isObject } from '../seed/core'
 
 /**
 * 
@@ -59,7 +59,7 @@ export class Mutation {
   set(newValue) {
     var oldValue = this.value
     if (newValue !== oldValue) {
-      if (Anot.isObject(newValue)) {
+      if (isObject(newValue)) {
         var hash = oldValue && oldValue.$hashcode
         var childVM = platform.createProxy(newValue, this)
         if (childVM) {

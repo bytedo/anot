@@ -7,6 +7,21 @@ import { updateModel } from './updateDataHandle'
 
 var rchangeFilter = /\|\s*change\b/
 var rdebounceFilter = /\|\s*debounce(?:\(([^)]+)\))?/
+var PARSER_FN = {
+  number(a) {
+    return a === '' ? '' : +a || 0
+  },
+  string(a) {
+    return a === null || a === void 0 ? '' : a + ''
+  },
+  boolean(a) {
+    if (a === '') {
+      return a
+    }
+    return a === 'true' || a === '1'
+  }
+}
+
 export function duplexBeforeInit() {
   var expr = this.expr
   if (rchangeFilter.test(expr)) {
@@ -144,7 +159,7 @@ try {
 
 function parseValue(val) {
   for (var i = 0, k; (k = this.parsers[i++]); ) {
-    var fn = Anot.parsers[k]
+    var fn = PARSER_FN[k]
     if (fn) {
       val = fn.call(this, val)
     }

@@ -44,11 +44,11 @@ Anot.directive('visible', {
             }
           }
         }
+        // fix firefox BUG,必须挂到页面上
         if (
           dom.style.display === '' &&
           Anot(dom).css('display') === none &&
-          // fix firefox BUG,必须挂到页面上
-          Anot.contains(dom.ownerDocument, dom)
+          dom.ownerDocument.contains(dom)
         ) {
           value = parseDisplay(dom)
         }

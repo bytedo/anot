@@ -1,11 +1,10 @@
-import { Anot, platform, isObject } from '../seed/core'
+import { Anot, platform, isObject, makeHashCode } from '../seed/core'
 import { $$skipArray } from './reserved'
 import { Mutation } from './Mutation'
 import { Computed } from './Computed'
 
 /**
  * 这里放置ViewModel模块的共用方法
- * Anot.define: 全框架最重要的方法,生成用户VM
  * IProxy, 基本用户数据产生的一个数据对象,基于$model与vmodel之间的形态
  * modelFactory: 生成用户VM
  * canHijack: 判定此属性是否该被劫持,加入数据监听与分发的的逻辑
@@ -15,18 +14,6 @@ import { Computed } from './Computed'
  * fuseFactory: 两个ms-controller间产生的代理VM的生成工厂
  */
 
-Anot.define = function(definition) {
-  var $id = definition.$id
-  if (!$id) {
-    console.error('vm.$id must be specified')
-  }
-  if (Anot.vmodels[$id]) {
-    console.warn('error:[' + $id + '] had defined!')
-  }
-  var vm = platform.modelFactory(definition)
-  return (Anot.vmodels[$id] = vm)
-}
-
 /**
  * Anot改用Proxy来创建VM,因此
  */
@@ -34,7 +21,7 @@ Anot.define = function(definition) {
 export function IProxy(definition, dd) {
   Anot.mix(this, definition)
   Anot.mix(this, $$skipArray)
-  this.$hashcode = Anot.makeHashCode('$')
+  this.$hashcode = makeHashCode('$')
   this.$id = this.$id || this.$hashcode
   this.$events = {
     __dep__: dd || new Mutation(this.$id)

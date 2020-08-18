@@ -1,6 +1,7 @@
 //这里放置存在异议的方法
-import { Anot, ohasOwn, inspect } from './core'
-export { Anot }
+import { Anot, inspect, platform, isObject } from './core'
+export default Anot
+
 var rwindow = /^\[object (?:Window|DOMWindow|global)\]$/
 var rarraylike = /(Array|List|Collection|Map|Arguments|Set)\]$/
 
@@ -38,6 +39,67 @@ Anot.isPlainObject = function(obj) {
     Object.getPrototypeOf(obj) === Object.prototype
   )
 }
+
+Anot.nextTick = (function() {
+  let queue = []
+  function callback() {
+    let n = queue.length
+    for (let i = 0; i < n; i++) {
+      queue[i]()
+    }
+    queue = queue.slice(n)
+  }
+
+  let node = document.createTextNode('<!-- -->')
+  new MutationObserver(callback).observe(node, { characterData: true })
+
+  let bool = false
+  return function(fn) {
+    queue.push(fn)
+    bool = !bool
+    node.data = bool
+  }
+})()
+
+Anot.init = function(source) {
+  if (source) {
+    if (Anot.isPlainObject(source)) {
+      var id = source.$id
+      var vm = Anot.vmodels[id]
+
+      if (!id) {
+        throw new Error(`vm的$id必须声明`)
+      }
+
+      if (vm) {
+        throw new Error(`vm实例[${id}]已经存在`)
+      }
+      vm = platform.modelFactory(source)
+      Anot.vmodels[id] = vm
+
+      Anot.nextTick(function() {
+        let $elem = document.querySelector('[anot=' + vm.$id + ']')
+        if ($elem) {
+          if ($elem === document.body) {
+            Anot.scan($elem)
+          } else {
+            let _parent = $elem
+            while ((_parent = _parent.parentNode)) {
+              if (_parent.__VM__) {
+                break
+              }
+            }
+            Anot.scan($elem.parentNode, _parent && _parent.__VM__)
+          }
+        }
+      })
+    }
+    return vm
+  }
+  this[0] = this.element = source
+}
+
+Anot.fn = Anot.prototype = Anot.init.prototype
 
 //与jQuery.extend方法，可用于浅拷贝，深拷贝
 Anot.mix = Anot.fn.mix = function() {

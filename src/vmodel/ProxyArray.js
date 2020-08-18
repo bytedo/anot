@@ -1,4 +1,4 @@
-import { Anot, ap, platform, isObject } from '../seed/core'
+import { Anot, ap, platform, isObject, makeHashCode } from '../seed/core'
 import { Mutation } from './Mutation'
 
 var _splice = ap.splice
@@ -105,7 +105,7 @@ export function listFactory(array, stop, dd) {
 
     Object.defineProperty(array, '$model', platform.modelAccessor)
 
-    platform.hideProperty(array, '$hashcode', Anot.makeHashCode('$'))
+    platform.hideProperty(array, '$hashcode', makeHashCode('$'))
     platform.hideProperty(array, '$events', { __dep__: dd || new Mutation() })
   }
   var _dd = array.$events && array.$events.__dep__

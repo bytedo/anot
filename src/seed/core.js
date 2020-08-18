@@ -7,12 +7,6 @@ export function Anot(el) {
   return new Anot.init(el)
 }
 
-Anot.init = function(el) {
-  this[0] = this.element = el
-}
-
-Anot.fn = Anot.prototype = Anot.init.prototype
-
 export var rword = /[^, ]+/g
 export var rnowhite = /\S+/g //存在非空字符
 export var platform = {} //用于放置平台差异的方法与属性
@@ -114,7 +108,6 @@ export var validators = {}
 export var cssHooks = {}
 
 window.Anot = Anot
-Anot.platform = platform
 
 /* istanbul ignore next  */
 export function createFragment() {
@@ -170,24 +163,6 @@ Object.assign(Anot, {
     }
   },
   evaluatorPool: new Cache(888),
-  parsers: {
-    number: function(a) {
-      return a === '' ? '' : +a || 0
-    },
-    string: function(a) {
-      return a === null || a === void 0 ? '' : a + ''
-    },
-    boolean: function(a) {
-      if (a === '') {
-        return a
-      }
-      return a === 'true' || a === '1'
-    }
-  },
-
-  oneObject,
-  inspect,
-  ohasOwn,
   vmodels: {},
 
   directives,
@@ -195,15 +170,11 @@ Object.assign(Anot, {
 
   eventHooks,
   eventListeners,
-  validators,
   cssHooks,
 
   noop,
 
-  isObject,
   range,
   hyphen,
-  camelize,
-
-  makeHashCode
+  camelize
 })

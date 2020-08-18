@@ -1,5 +1,4 @@
-import { Anot } from './seed/core'
-import './seed/lang'
+import Anot from './seed/index'
 
 import './filters/index'
 import './dom/modern'

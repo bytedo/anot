@@ -1,4 +1,4 @@
-import { Anot, escapeRegExp } from '../seed/core'
+import { Anot, escapeRegExp, isObject } from '../seed/core'
 import { $$skipArray } from '../vmodel/reserved'
 
 export function orderBy(array, by, decend) {
@@ -96,7 +96,7 @@ export function filterBy(array, search, ...args) {
 }
 
 export function selectBy(data, array, defaults) {
-  if (Anot.isObject(data) && !Array.isArray(data)) {
+  if (isObject(data) && !Array.isArray(data)) {
     var target = []
     return recovery(target, array, function(name) {
       target.push(

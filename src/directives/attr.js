@@ -1,4 +1,4 @@
-import { Anot } from '../seed/core'
+import Anot from '../seed/index'
 import { cssDiff } from './css'
 import { updateAttrs } from '../dom/attr/modern'
 

@@ -1,4 +1,11 @@
-import { Anot, createFragment, platform, isObject, ap } from '../seed/core'
+import {
+  Anot,
+  createFragment,
+  platform,
+  isObject,
+  ap,
+  makeHashCode
+} from '../seed/core'
 
 import { VFragment } from '../vdom/VFragment'
 import { $$skipArray } from '../vmodel/reserved'
@@ -39,7 +46,7 @@ Anot.directive('for', {
     this.expr = arr[1]
     this.keyName = kv[0]
     this.valName = kv[1]
-    this.signature = Anot.makeHashCode('for')
+    this.signature = makeHashCode('for')
     if (asName) {
       this.asName = asName
     }

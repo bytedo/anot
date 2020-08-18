@@ -16,10 +16,6 @@ Anot.ready = function(fn) {
   }
 }
 
-Anot.ready(function() {
-  Anot.scan && Anot.scan(document.body)
-})
-
 /* istanbul ignore next */
 function bootstrap() {
   if (document.readyState === 'complete') {
