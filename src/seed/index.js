@@ -7,15 +7,16 @@ var rarraylike = /(Array|List|Collection|Map|Arguments|Set)\]$/
 
 // Anot.type
 var class2type = {}
-'Boolean,Number,String,Function,Array,Date,RegExp,Object,Error,AsyncFunction,Promise,Generator,GeneratorFunction'
+var types =
+  'Boolean,Number,String,Function,Array,Date,RegExp,Object,Error,AsyncFunction,Promise,Generator,GeneratorFunction'
+
+types
   .split(',')
-  .forEach(function(name) {
-    class2type['[object ' + name + ']'] = name.toLowerCase()
-  })
+  .forEach(name => (class2type[`[object ${name}]`] = name.toLowerCase()))
 
 Anot.type = function(obj) {
+  // 早期的webkit内核浏览器实现了已废弃的ecma262v4标准，可以将正则字面量当作函数使用，因此typeof在判定正则时会返回function
   if (obj) {
-    // 早期的webkit内核浏览器实现了已废弃的ecma262v4标准，可以将正则字面量当作函数使用，因此typeof在判定正则时会返回function
     return typeof obj === 'object' || typeof obj === 'function'
       ? class2type[inspect.call(obj)] || 'object'
       : typeof obj
@@ -23,20 +24,10 @@ Anot.type = function(obj) {
   return String(obj)
 }
 
-Anot.isFunction = function(fn) {
-  return typeof fn === 'function'
-}
-
-Anot.isWindow = function(obj) {
-  return rwindow.test(inspect.call(obj))
-}
-
 /*判定是否是一个朴素的javascript对象（Object），不是DOM对象，不是BOM对象，不是自定义类的实例*/
 Anot.isPlainObject = function(obj) {
-  // 简单的 typeof obj === 'object'检测，会致使用isPlainObject(window)在opera下通不过
   return (
-    inspect.call(obj) === '[object Object]' &&
-    Object.getPrototypeOf(obj) === Object.prototype
+    typeof obj === 'object' && Object.getPrototypeOf(obj) === Object.prototype
   )
 }
 
@@ -75,24 +66,26 @@ Anot.init = function(source) {
         throw new Error(`vm实例[${id}]已经存在`)
       }
       vm = platform.modelFactory(source)
+
+      console.log('+++++++++++', vm)
       Anot.vmodels[id] = vm
 
-      Anot.nextTick(function() {
-        let $elem = document.querySelector('[anot=' + vm.$id + ']')
-        if ($elem) {
-          if ($elem === document.body) {
-            Anot.scan($elem)
-          } else {
-            let _parent = $elem
-            while ((_parent = _parent.parentNode)) {
-              if (_parent.__VM__) {
-                break
-              }
-            }
-            Anot.scan($elem.parentNode, _parent && _parent.__VM__)
-          }
-        }
-      })
+      // Anot.nextTick(function() {
+      //   let $elem = document.querySelector('[anot=' + vm.$id + ']')
+      //   if ($elem) {
+      //     if ($elem === document.body) {
+      //       Anot.scan($elem)
+      //     } else {
+      //       let _parent = $elem
+      //       while ((_parent = _parent.parentNode)) {
+      //         if (_parent.__VM__) {
+      //           break
+      //         }
+      //       }
+      //       Anot.scan($elem.parentNode, _parent && _parent.__VM__)
+      //     }
+      //   }
+      // })
     }
     return vm
   }

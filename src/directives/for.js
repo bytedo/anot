@@ -8,7 +8,7 @@ import {
 } from '../seed/core'
 
 import { VFragment } from '../vdom/VFragment'
-import { $$skipArray } from '../vmodel/reserved'
+import { SYS_SKIP } from '../vmodel/reserved'
 
 import { addScope, makeHandle } from '../parser/index'
 import { updateView } from './duplex/share'
@@ -145,7 +145,7 @@ function createFragments(instance, obj) {
       instance.fragments = fragments
     } else {
       Anot.each(obj, function(key, value) {
-        if (!(key in $$skipArray)) {
+        if (!(key in SYS_SKIP)) {
           var k = array ? getTraceKey(value) : key
           fragments.push(new VFragment([], k, value, i++))
           ids.push(k)

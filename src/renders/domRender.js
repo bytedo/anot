@@ -9,7 +9,7 @@ import { orphanTag } from '../vtree/orphanTag'
 import { parseAttributes, eventMap } from '../parser/attributes'
 import { parseInterpolate } from '../parser/interpolate'
 
-import { startWith, groupTree, dumpTree, getRange } from './share'
+import { groupTree, dumpTree, getRange } from './share'
 
 var viewID
 
@@ -110,7 +110,7 @@ class Render {
    * @returns {undefined}
    */
   scanComment(vdom, scope, parentChildren) {
-    if (startWith(vdom.nodeValue, 'ms-for:')) {
+    if (vdom.nodeValue.startsWith('ms-for:')) {
       this.getForBinding(vdom, scope, parentChildren)
     }
   }
@@ -134,7 +134,7 @@ class Render {
       if (attr.charAt(0) === ':') {
         attr = 'ms-' + attr.slice(1)
       }
-      if (startWith(attr, 'ms-')) {
+      if (attr.startsWith('ms-')) {
         dirs[attr] = value
         var type = attr.match(/\w+/g)[1]
         type = eventMap[type] || type

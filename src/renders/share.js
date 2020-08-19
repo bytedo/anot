@@ -60,14 +60,16 @@ export function dumpTree(elem) {
 
 export function getRange(childNodes, node) {
   var i = childNodes.indexOf(node) + 1
-  var deep = 1,
-    nodes = [],
-    end
+  var deep = 1
+  var nodes = []
+  var end
+
   nodes.start = i
+
   while ((node = childNodes[i++])) {
     nodes.push(node)
     if (node.nodeName === '#comment') {
-      if (startWith(node.nodeValue, 'ms-for:')) {
+      if (node.nodeValue.startsWith('ms-for:')) {
         deep++
       } else if (node.nodeValue === 'ms-for-end:') {
         deep--
@@ -81,10 +83,6 @@ export function getRange(childNodes, node) {
   }
   nodes.end = end
   return nodes
-}
-
-export function startWith(long, short) {
-  return long.indexOf(short) === 0
 }
 
 var appendChildMayThrowError = {

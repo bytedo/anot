@@ -1,63 +1,9 @@
 import { Anot, platform, isObject } from '../seed/core'
-import { $$skipArray } from './reserved'
+import { SYS_SKIP } from './reserved'
 import { Mutation } from './Mutation'
 import { Computed } from './Computed'
 import { IProxy, canHijack, createProxy } from './share'
 
-platform.modelFactory = function modelFactory(definition, dd) {
-  var clone = {}
-  for (let i in definition) {
-    clone[i] = definition[i]
-    delete definition[i]
-  }
-
-  definition.$id = clone.$id
-  var proxy = new IProxy(definition, dd)
-
-  var vm = toProxy(proxy)
-  //先添加普通属性与监控属性
-  for (let i in clone) {
-    vm[i] = clone[i]
-  }
-  var $computed = clone.$computed
-  //再添加计算属性
-  if ($computed) {
-    delete clone.$computed
-    for (let i in $computed) {
-      let val = $computed[i]
-      if (typeof val === 'function') {
-        let _val = val
-        val = { get: _val }
-      }
-      if (val && val.get) {
-        val.getter = val.get
-        //在set方法中的target是IProxy，需要重写成Proxy，才能依赖收集
-        val.vm = vm
-        if (val.set) val.setter = val.set
-        $computed[i] = val
-        delete clone[i] //去掉重名的监控属性
-      } else {
-        delete $computed[i]
-      }
-    }
-    for (let i in $computed) {
-      vm[i] = $computed[i]
-    }
-  }
-
-  return vm
-}
-
-//https://developer.mozilla.org/en-US/docs/Archive/Web/Old_Proxy_API
-function toProxy(definition) {
-  return Proxy.create
-    ? Proxy.create(definition, traps)
-    : new Proxy(definition, traps)
-}
-
-function wrapIt(str) {
-  return '☥' + str + '☥'
-}
 var traps = {
   deleteProperty(target, name) {
     if (target.hasOwnProperty(name)) {
@@ -89,7 +35,7 @@ var traps = {
     if (name === '$model' || name === '$track') {
       return true
     }
-    if (name in $$skipArray) {
+    if (name in SYS_SKIP) {
       target[name] = value
       return true
     }
@@ -126,13 +72,68 @@ var traps = {
   //has 只能用于 in 操作符，没什么用删去
 }
 
+function wrapIt(str) {
+  return '☥' + str + '☥'
+}
+
 function updateTrack(target, name) {
   var arr = target.$track.match(/[^☥]+/g) || []
   arr.push(name)
   target.$track = arr.sort().join('☥')
 }
 
-Anot.itemFactory = platform.itemFactory = function itemFactory(before, after) {
+platform.modelFactory = function(definition, dd) {
+  var clone = {}
+  for (let i in definition) {
+    clone[i] = definition[i]
+    delete definition[i]
+  }
+
+  definition.$id = clone.$id
+  var proxy = new IProxy(definition, dd)
+
+  var vm = new Proxy(proxy, traps)
+  var { state, props, watch, methods, mounted, computed } = clone
+
+  console.log('--------------', vm)
+  //先添加普通属性与监控属性
+  for (let i in state) {
+    vm[i] = state[i]
+  }
+  for (let i in methods) {
+    vm[i] = methods[i]
+  }
+  //再添加计算属性
+  if (computed) {
+    delete clone.computed
+    for (let i in computed) {
+      let val = computed[i]
+      if (typeof val === 'function') {
+        let _val = val
+        val = { get: _val }
+      }
+      if (val && val.get) {
+        val.getter = val.get
+        //在set方法中的target是IProxy，需要重写成Proxy，才能依赖收集
+        val.vm = vm
+        if (val.set) {
+          val.setter = val.set
+        }
+        computed[i] = val
+        delete state[i] //去掉重名的监控属性
+      } else {
+        delete computed[i]
+      }
+    }
+    for (let i in computed) {
+      vm[i] = computed[i]
+    }
+  }
+
+  return vm
+}
+
+Anot.itemFactory = platform.itemFactory = function(before, after) {
   var definition = before.$model
   definition.$proxyItemBackdoor = true
   definition.$id =

@@ -1,5 +1,4 @@
 import { Anot, escapeRegExp, isObject } from '../seed/core'
-import { $$skipArray } from '../vmodel/reserved'
 
 export function orderBy(array, by, decend) {
   var type = Anot.type(array)

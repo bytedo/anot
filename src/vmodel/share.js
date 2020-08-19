@@ -1,7 +1,9 @@
 import { Anot, platform, isObject, makeHashCode } from '../seed/core'
-import { $$skipArray } from './reserved'
+import { SYS_SKIP } from './reserved'
 import { Mutation } from './Mutation'
 import { Computed } from './Computed'
+
+var $proxyItemBackdoorMap = {}
 
 /**
  * 这里放置ViewModel模块的共用方法
@@ -9,7 +11,6 @@ import { Computed } from './Computed'
  * modelFactory: 生成用户VM
  * canHijack: 判定此属性是否该被劫持,加入数据监听与分发的的逻辑
  * createProxy: listFactory与modelFactory的封装
- * createAccessor: 实现数据监听与分发的重要对象
  * itemFactory: ms-for循环中产生的代理VM的生成工厂
  * fuseFactory: 两个ms-controller间产生的代理VM的生成工厂
  */
@@ -18,21 +19,25 @@ import { Computed } from './Computed'
  * Anot改用Proxy来创建VM,因此
  */
 
-export function IProxy(definition, dd) {
-  Anot.mix(this, definition)
-  Anot.mix(this, $$skipArray)
+export function IProxy(source, dd) {
+  // var { state, props, watch, methods, mounted } = source
+
+  // console.log(state, methods)
+  Anot.mix(this, source)
+  Anot.mix(this, SYS_SKIP)
   this.$hashcode = makeHashCode('$')
   this.$id = this.$id || this.$hashcode
   this.$events = {
     __dep__: dd || new Mutation(this.$id)
   }
-
+  // console.log('***********', this.$id)
   delete this.$mutations
+
   this.$accessors = {}
   this.$computed = {}
   this.$track = ''
 
-  if (dd === void 0) {
+  if (dd === undefined) {
     this.$watch = platform.watchFactory(this.$events)
     this.$fire = platform.fireFactory(this.$events)
   } else {
@@ -41,50 +46,10 @@ export function IProxy(definition, dd) {
   }
 }
 
-platform.modelFactory = function modelFactory(definition, dd) {
-  var $computed = definition.$computed || {}
-  delete definition.$computed
-  var core = new IProxy(definition, dd)
-  var $accessors = core.$accessors
-  var keys = []
-
-  platform.hideProperty(core, '$mutations', {})
-
-  for (let key in definition) {
-    if (key in $$skipArray) continue
-    var val = definition[key]
-    keys.push(key)
-    if (canHijack(key, val)) {
-      $accessors[key] = createAccessor(key, val)
-    }
-  }
-  for (let key in $computed) {
-    if (key in $$skipArray) continue
-    var val = $computed[key]
-    if (typeof val === 'function') {
-      val = {
-        get: val
-      }
-    }
-    if (val && val.get) {
-      val.getter = val.get
-      val.setter = val.set
-      Anot.Array.ensure(keys, key)
-      $accessors[key] = createAccessor(key, val, true)
-    }
-  }
-  //将系统API以unenumerable形式加入vm,
-  //添加用户的其他不可监听属性或方法
-  //重写$track
-  //并在IE6-8中增添加不存在的hasOwnPropert方法
-  var vm = platform.createViewModel(core, $accessors, core)
-  platform.afterCreate(vm, core, keys, !dd)
-  return vm
-}
-var $proxyItemBackdoorMap = {}
-
 export function canHijack(key, val, $proxyItemBackdoor) {
-  if (key in $$skipArray) return false
+  if (key in SYS_SKIP) {
+    return false
+  }
   if (key.charAt(0) === '$') {
     if ($proxyItemBackdoor) {
       if (!$proxyItemBackdoorMap[key]) {
@@ -119,60 +84,6 @@ export function createProxy(target, dd) {
 }
 
 platform.createProxy = createProxy
-
-platform.itemFactory = function itemFactory(before, after) {
-  var keyMap = before.$model
-  var core = new IProxy(keyMap)
-  var state = Object.assign(core.$accessors, before.$accessors) //防止互相污染
-  var data = after.data
-  //core是包含系统属性的对象
-  //keyMap是不包含系统属性的对象, keys
-  for (var key in data) {
-    var val = (keyMap[key] = core[key] = data[key])
-    state[key] = createAccessor(key, val)
-  }
-  var keys = Object.keys(keyMap)
-  var vm = platform.createViewModel(core, state, core)
-  platform.afterCreate(vm, core, keys)
-  return vm
-}
-
-function createAccessor(key, val, isComputed) {
-  var mutation = null
-  var Accessor = isComputed ? Computed : Mutation
-  return {
-    get: function Getter() {
-      if (!mutation) {
-        mutation = new Accessor(key, val, this)
-      }
-      return mutation.get()
-    },
-    set: function Setter(newValue) {
-      if (!mutation) {
-        mutation = new Accessor(key, val, this)
-      }
-      mutation.set(newValue)
-    },
-    enumerable: true,
-    configurable: true
-  }
-}
-
-platform.fuseFactory = function fuseFactory(before, after) {
-  var keyMap = Anot.mix(before.$model, after.$model)
-  var core = new IProxy(
-    Anot.mix(keyMap, {
-      $id: before.$id + after.$id
-    })
-  )
-  var state = Anot.mix(core.$accessors, before.$accessors, after.$accessors) //防止互相污染
-
-  var keys = Object.keys(keyMap)
-  //将系统API以unenumerable形式加入vm,并在IE6-8中添加hasOwnPropert方法
-  var vm = platform.createViewModel(core, state, core)
-  platform.afterCreate(vm, core, keys, false)
-  return vm
-}
 
 function toJson(val) {
   var xtype = Anot.type(val)

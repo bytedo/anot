@@ -1,5 +1,5 @@
 import { Anot, platform } from '../seed/core'
-import { $$skipArray } from './reserved'
+import { SYS_SKIP } from './reserved'
 import { Action } from './Action'
 import './share'
 import './ProxyArray'
@@ -58,7 +58,7 @@ export function fireFactory(core) {
 export function afterCreate(vm, core, keys, bindThis) {
   var ac = vm.$accessors
   //隐藏系统属性
-  for (var key in $$skipArray) {
+  for (var key in SYS_SKIP) {
     hideProperty(vm, key, vm[key])
   }
   //为不可监听的属性或方法赋值
